@@ -9,7 +9,6 @@ const PORT = process.env.PORT || 3001;
 
 const server = http.createServer(app);
 
-// 2. Configura o Socket.io no servidor HTTP
 const io = new Server(server, {
     cors: {
         // Em produção, substitua "*" pela URL do seu frontend (ex: "http://localhost:5173")
