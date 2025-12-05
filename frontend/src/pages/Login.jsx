@@ -8,7 +8,7 @@ const Login = () => {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   
-  const { login } = useContext(AuthContext); // Pega a função do contexto
+  const { login } = useContext(AuthContext);
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
@@ -17,8 +17,7 @@ const Login = () => {
 
     try {
       await login(email, password);
-      // Se der certo, o Context atualiza o estado e o App redireciona, 
-      // mas por garantia forçamos a navegação:
+      
       navigate('/'); 
     } catch (err) {
       setError('Email ou senha inválidos. Tente novamente.');

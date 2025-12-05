@@ -22,7 +22,7 @@ const Register = () => {
 
     try {
       // Faz o POST para a rota de registro do seu backend
-      await api.post('/auth/register', formData);
+      await api.post('/api/auth/register', formData);
       
       alert('Conta criada com sucesso! Faça login.');
       navigate('/login');
