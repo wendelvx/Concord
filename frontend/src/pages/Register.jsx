@@ -21,34 +21,33 @@ const Register = () => {
     setError('');
 
     try {
-      
       await api.post('api/auth/register', formData);
       
-      alert('ENTITY_CREATED_SUCCESSFULLY. REDIRECTING...');
+      alert('ENTIDADE_CRIADA_COM_SUCESSO. REDIRECIONANDO...');
       navigate('/login');
     } catch (err) {
-      const msg = err.response?.data?.error || 'SYSTEM_FAILURE: CANNOT CREATE USER.';
+      const msg = err.response?.data?.error || 'FALHA_SISTEMA: NÃO_FOI_POSSÍVEL_CRIAR_USUÁRIO.';
       setError(msg);
     }
   };
 
   return (
     <AuthLayout 
-      title="NEW_USER_PROTOCOL" 
-      subtitle="INITIALIZING_REGISTRATION_SEQUENCE..."
+      title="PROTOCOLO_NOVO_USUÁRIO" 
+      subtitle="INICIALIZANDO_SEQUÊNCIA_DE_CADASTRO..."
     >
       <form onSubmit={handleSubmit} className="space-y-5">
         
         {}
         {error && (
           <div className="border border-red-500/50 bg-red-900/10 text-red-500 text-xs p-2 font-mono uppercase tracking-widest text-center animate-pulse">
-            [CRITICAL_ERROR]: {error}
+            [ERRO_CRÍTICO]: {error}
           </div>
         )}
 
         <div>
           <label className="block text-xs font-bold text-green-700 uppercase mb-2 tracking-widest">
-            User_Alias // Username
+            Alias_Usuário // Nome
           </label>
           <input 
             type="text" 
@@ -62,7 +61,7 @@ const Register = () => {
 
         <div>
           <label className="block text-xs font-bold text-green-700 uppercase mb-2 tracking-widest">
-            Contact_Node // Email
+            Nó_de_Contato // Email
           </label>
           <input 
             type="email" 
@@ -76,7 +75,7 @@ const Register = () => {
 
         <div>
           <label className="block text-xs font-bold text-green-700 uppercase mb-2 tracking-widest">
-            Encryption_Key // Password
+            Chave_Criptografia // Senha
           </label>
           <input 
             type="password" 
@@ -92,12 +91,12 @@ const Register = () => {
           type="submit" 
           className="w-full bg-green-900/10 border border-green-600 text-green-500 font-bold py-3 px-4 rounded-none hover:bg-green-500 hover:text-black hover:shadow-[0_0_25px_rgba(34,197,94,0.4)] transition-all duration-300 uppercase tracking-[0.2em] mt-4"
         >
-          Execute_Registration
+          EXECUTAR_REGISTRO
         </button>
 
         <div className="text-xs text-green-800 mt-6 text-center font-mono">
           <Link to="/login" className="text-green-500 hover:text-green-300 font-bold hover:underline decoration-dashed underline-offset-4">
-            { '<' } RETURN_TO_LOGIN
+            { '<' } RETORNAR_AO_TERMINAL
           </Link>
         </div>
       </form>
