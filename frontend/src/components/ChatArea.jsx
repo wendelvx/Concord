@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef, useContext } from 'react';
 import io from 'socket.io-client';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
-import { FaPaperPlane, FaHashtag } from 'react-icons/fa'; // Ícones
+import { FaPaperPlane, FaHashtag } from 'react-icons/fa'; 
 import api from '../services/api';
 import { AuthContext } from '../context/AuthContext';
 
@@ -46,7 +46,6 @@ const ChatArea = ({ channel }) => {
         const fetchHistory = async () => {
             try {
                 const response = await api.get(`/${channel.id}/history`);
-                // A API retorna as mensagens, setamos no estado
                 setMessages(response.data);
             } catch (error) {
                 console.error("Erro ao carregar histórico:", error);
@@ -80,49 +79,59 @@ const ChatArea = ({ channel }) => {
     };
 
     return (
-        <div className="flex flex-col h-full bg-gray-700 text-gray-100">
-            <div className="h-12 border-b border-gray-900 flex items-center px-4 shadow-sm bg-gray-750">
-                <FaHashtag className="text-gray-400 mr-2" />
-                <span className="font-bold text-white">{channel.name || 'Geral'}</span>
+        <div className="flex flex-col h-full bg-transparent text-green-400 font-mono">
+            
+            {/* Cabeçalho do Chat */}
+            <div className="h-14 border-b border-green-900/50 flex items-center px-4 bg-black/60 backdrop-blur-sm z-20">
+                <FaHashtag className="text-green-600 mr-2" />
+                <span className="font-bold text-green-400 tracking-widest uppercase">
+                    {channel.name || 'UNKNOWN_CHANNEL'}
+                </span>
+                <span className="ml-4 text-[10px] text-green-800 border border-green-900 px-1">
+                    ENCRYPTED_CONNECTION
+                </span>
             </div>
 
-            <div className="flex-1 overflow-y-auto p-4 space-y-4 custom-scrollbar">
+            {/* Área de Mensagens */}
+            <div className="flex-1 overflow-y-auto p-4 space-y-6 custom-scrollbar z-10">
                 {messages.map((msg, index) => {
-                    // Verifica se a mensagem anterior foi do mesmo usuário (para agrupar visualmente)
                     const isSameUser = index > 0 && messages[index - 1].userId === msg.userId;
                     
                     return (
-                        <div key={msg.id || index} className={`flex ${isSameUser ? 'mt-1' : 'mt-4'}`}>
-                            {/* Avatar (só mostra se não for continuação) */}
+                        <div key={msg.id || index} className={`flex group ${isSameUser ? 'mt-1' : 'mt-6'}`}>
+                            
+                            {/* Avatar Quadrado (Estilo Retro) */}
                             {!isSameUser ? (
-                                <div className="w-10 h-10 rounded-full bg-gray-500 flex-shrink-0 mr-4 overflow-hidden">
-                                     {/* Placeholder ou imagem real */}
+                                <div className="w-10 h-10 rounded-none border border-green-600/50 bg-black flex-shrink-0 mr-4 overflow-hidden relative">
+                                     {/* Linha de scanline decorativa no avatar */}
+                                     <div className="absolute inset-0 bg-green-500/10 pointer-events-none"></div>
+                                     
                                      {msg.avatar_url ? (
-                                        <img src={`http://localhost:3001${msg.avatar_url}`} alt="avatar" className="w-full h-full object-cover"/>
+                                        <img src={`http://localhost:3001${msg.avatar_url}`} alt="avatar" className="w-full h-full object-cover grayscale contrast-125"/>
                                      ) : (
-                                        <div className="w-full h-full flex items-center justify-center text-sm font-bold">
+                                        <div className="w-full h-full flex items-center justify-center text-sm font-bold text-green-500">
                                             {msg.username ? msg.username.charAt(0).toUpperCase() : '?'}
                                         </div>
                                      )}
                                 </div>
                             ) : (
-                                <div className="w-10 mr-4"></div> // Espaçamento para alinhar
+                                <div className="w-10 mr-4 border-l border-green-900/30 ml-5 h-full opacity-50"></div> 
                             )}
 
-                            <div>
+                            <div className="flex-1">
                                 {!isSameUser && (
-                                    <div className="flex items-baseline">
-                                        <span className="font-bold text-white mr-2 cursor-pointer hover:underline">
+                                    <div className="flex items-baseline mb-1">
+                                        <span className="font-bold text-green-400 mr-2 cursor-pointer hover:underline decoration-dashed hover:text-green-300">
                                             {msg.username}
                                         </span>
-                                        <span className="text-xs text-gray-400">
-                                            {msg.created_at 
-                                                ? format(new Date(msg.created_at), "dd/MM/yyyy HH:mm", { locale: ptBR })
-                                                : 'Agora'}
+                                        <span className="text-[10px] text-green-800 uppercase tracking-widest">
+                                            [{msg.created_at 
+                                                ? format(new Date(msg.created_at), "HH:mm:ss", { locale: ptBR })
+                                                : 'SYNCING...'}]
                                         </span>
                                     </div>
                                 )}
-                                <p className="text-gray-300 leading-relaxed break-all">
+                                <p className={`text-green-200/90 leading-relaxed break-all text-sm ${!isSameUser ? '' : 'opacity-90'}`}>
                                     {msg.content}
                                 </p>
                             </div>
@@ -132,19 +141,22 @@ const ChatArea = ({ channel }) => {
                 <div ref={messagesEndRef} />
             </div>
 
-            <div className="p-4 bg-gray-700">
+            {/* Input de Mensagem */}
+            <div className="p-4 bg-black border-t border-green-900 z-20">
                 <form 
                     onSubmit={handleSendMessage}
-                    className="bg-gray-600 rounded-lg flex items-center px-4 py-2"
+                    className="bg-black border border-green-800 flex items-center px-4 py-3 shadow-[0_0_10px_rgba(0,0,0,0.5)] focus-within:border-green-500 focus-within:shadow-[0_0_15px_rgba(34,197,94,0.2)] transition-all duration-300"
                 >
+                    <span className="text-green-600 mr-2 animate-pulse">{'>'}</span>
                     <input
                         type="text"
-                        className="bg-transparent flex-1 text-white outline-none placeholder-gray-400"
-                        placeholder={`Conversar em #${channel.name || 'geral'}`}
+                        className="bg-transparent flex-1 text-green-400 outline-none placeholder-green-900 font-mono h-full"
+                        placeholder={`Inject_Message() -> #${channel.name || 'general'}`}
                         value={newMessage}
                         onChange={(e) => setNewMessage(e.target.value)}
+                        autoComplete="off"
                     />
-                    <button type="submit" className="text-gray-400 hover:text-white transition">
+                    <button type="submit" className="text-green-800 hover:text-green-400 transition transform hover:scale-110">
                         <FaPaperPlane />
                     </button>
                 </form>
