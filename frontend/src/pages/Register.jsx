@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import AuthLayout from '../layouts/AuthLayout';
-import api from '../services/api'; // Importamos a API diretamente aqui
+import api from '../services/api'; 
 
 const Register = () => {
   const [formData, setFormData] = useState({
@@ -21,69 +21,83 @@ const Register = () => {
     setError('');
 
     try {
-      // Faz o POST para a rota de registro do seu backend
-      await api.post('/api/auth/register', formData);
       
-      alert('Conta criada com sucesso! Faça login.');
+      await api.post('api/auth/register', formData);
+      
+      alert('ENTITY_CREATED_SUCCESSFULLY. REDIRECTING...');
       navigate('/login');
     } catch (err) {
-      // Tenta pegar a mensagem de erro do backend (ex: "Email já existe")
-      const msg = err.response?.data?.error || 'Erro ao criar conta.';
+      const msg = err.response?.data?.error || 'SYSTEM_FAILURE: CANNOT CREATE USER.';
       setError(msg);
     }
   };
 
   return (
     <AuthLayout 
-      title="Criar uma conta" 
-      subtitle="Vamos começar sua jornada!"
+      title="NEW_USER_PROTOCOL" 
+      subtitle="INITIALIZING_REGISTRATION_SEQUENCE..."
     >
-      <form onSubmit={handleSubmit} className="space-y-4">
-        {error && <div className="text-red-400 text-sm text-center">{error}</div>}
+      <form onSubmit={handleSubmit} className="space-y-5">
+        
+        {}
+        {error && (
+          <div className="border border-red-500/50 bg-red-900/10 text-red-500 text-xs p-2 font-mono uppercase tracking-widest text-center animate-pulse">
+            [CRITICAL_ERROR]: {error}
+          </div>
+        )}
 
         <div>
-          <label className="block text-xs font-bold text-gray-400 uppercase mb-1">Nome de Usuário</label>
+          <label className="block text-xs font-bold text-green-700 uppercase mb-2 tracking-widest">
+            User_Alias // Username
+          </label>
           <input 
             type="text" 
             name="username"
             required
-            className="w-full bg-[#202225] text-white p-2 rounded focus:outline-none focus:ring-2 focus:ring-[#5865F2]"
+            placeholder="Neo"
+            className="w-full bg-black/40 border border-green-800 text-green-400 p-3 rounded-none focus:outline-none focus:border-green-400 focus:shadow-[0_0_15px_rgba(34,197,94,0.2)] transition-all placeholder-green-900 font-mono"
             onChange={handleChange}
           />
         </div>
 
         <div>
-          <label className="block text-xs font-bold text-gray-400 uppercase mb-1">Email</label>
+          <label className="block text-xs font-bold text-green-700 uppercase mb-2 tracking-widest">
+            Contact_Node // Email
+          </label>
           <input 
             type="email" 
             name="email"
             required
-            className="w-full bg-[#202225] text-white p-2 rounded focus:outline-none focus:ring-2 focus:ring-[#5865F2]"
+            placeholder="neo@matrix.com"
+            className="w-full bg-black/40 border border-green-800 text-green-400 p-3 rounded-none focus:outline-none focus:border-green-400 focus:shadow-[0_0_15px_rgba(34,197,94,0.2)] transition-all placeholder-green-900 font-mono"
             onChange={handleChange}
           />
         </div>
 
         <div>
-          <label className="block text-xs font-bold text-gray-400 uppercase mb-1">Senha</label>
+          <label className="block text-xs font-bold text-green-700 uppercase mb-2 tracking-widest">
+            Encryption_Key // Password
+          </label>
           <input 
             type="password" 
             name="password"
             required
-            className="w-full bg-[#202225] text-white p-2 rounded focus:outline-none focus:ring-2 focus:ring-[#5865F2]"
+            placeholder="••••••••"
+            className="w-full bg-black/40 border border-green-800 text-green-400 p-3 rounded-none focus:outline-none focus:border-green-400 focus:shadow-[0_0_15px_rgba(34,197,94,0.2)] transition-all placeholder-green-900 font-mono"
             onChange={handleChange}
           />
         </div>
 
         <button 
           type="submit" 
-          className="w-full bg-[#5865F2] hover:bg-[#4752c4] text-white font-bold py-2 px-4 rounded transition duration-200"
+          className="w-full bg-green-900/10 border border-green-600 text-green-500 font-bold py-3 px-4 rounded-none hover:bg-green-500 hover:text-black hover:shadow-[0_0_25px_rgba(34,197,94,0.4)] transition-all duration-300 uppercase tracking-[0.2em] mt-4"
         >
-          Continuar
+          Execute_Registration
         </button>
 
-        <div className="text-sm text-gray-400 mt-4">
-          <Link to="/login" className="text-[#00b0f4] hover:underline">
-            Já tem uma conta?
+        <div className="text-xs text-green-800 mt-6 text-center font-mono">
+          <Link to="/login" className="text-green-500 hover:text-green-300 font-bold hover:underline decoration-dashed underline-offset-4">
+            { '<' } RETURN_TO_LOGIN
           </Link>
         </div>
       </form>
