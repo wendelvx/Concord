@@ -44,7 +44,7 @@ const ChannelList = ({ onSelectChannel }) => {
       
       {/* 1. Cabeçalho do Servidor */}
       <div className="h-14 flex items-center px-4 border-b border-green-900 hover:bg-green-900/10 transition cursor-pointer text-green-500 font-bold tracking-widest uppercase group">
-        <span className="truncate">ROOT_DIRECTORY</span>
+        <span className="truncate">DIRETÓRIO_RAIZ</span>
         <FaChevronDown className="ml-auto text-xs group-hover:animate-bounce" />
       </div>
 
@@ -53,7 +53,7 @@ const ChannelList = ({ onSelectChannel }) => {
         
         {/* Categoria Visual */}
         <div className="flex items-center justify-between px-2 pt-4 pb-2 text-[10px] font-bold uppercase text-green-800 tracking-[0.2em] cursor-pointer hover:text-green-500 transition">
-          <span>Text_Protocols</span>
+          <span>Protocolos_Texto</span>
           <span className="text-lg leading-none">+</span>
         </div>
 
@@ -79,7 +79,7 @@ const ChannelList = ({ onSelectChannel }) => {
 
         {channels.length === 0 && (
           <div className="px-2 text-xs mt-4 text-red-500 font-bold border border-red-900/50 p-2 bg-red-900/10">
-            [ERROR]: NO_CHANNELS_FOUND
+            [ERRO]: NENHUM_CANAL_DETECTADO
           </div>
         )}
       </div>
@@ -111,16 +111,16 @@ const ChannelList = ({ onSelectChannel }) => {
 
         {/* Ícones de Controle */}
         <div className="flex items-center space-x-1">
-          <button className="p-2 hover:bg-green-900/30 text-green-700 hover:text-green-400 transition" title="Mute Mic">
+          <button className="p-2 hover:bg-green-900/30 text-green-700 hover:text-green-400 transition" title="Desativar Mic">
             <FaMicrophone size={14} />
           </button>
-          <button className="p-2 hover:bg-green-900/30 text-green-700 hover:text-green-400 transition" title="Deafen">
+          <button className="p-2 hover:bg-green-900/30 text-green-700 hover:text-green-400 transition" title="Silenciar Saída">
             <FaHeadphones size={14} />
           </button>
           <button 
             onClick={logout} 
             className="p-2 hover:bg-red-900/30 text-green-700 hover:text-red-500 transition border border-transparent hover:border-red-900/50" 
-            title="Terminate Session"
+            title="Encerrar Sessão"
           >
             <FaSignOutAlt size={14} />
           </button>

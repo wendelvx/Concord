@@ -20,9 +20,9 @@ const DiscordLayout = () => {
          
          <hr className="w-8 border-green-900" />
 
-         {/* Exemplo de outro servidor (Bolimha) */}
-         <div className="w-12 h-12 border border-green-900 text-green-800 flex items-center justify-center cursor-pointer hover:border-green-500 hover:text-green-500 transition-all">
-             SERVER_01
+         {/* Exemplo de outro servidor */}
+         <div className="w-12 h-12 border border-green-900 text-green-800 flex items-center justify-center cursor-pointer hover:border-green-500 hover:text-green-500 transition-all text-[10px] font-bold text-center leading-none p-1">
+             SRV_01
          </div>
       </div>
 
@@ -30,7 +30,6 @@ const DiscordLayout = () => {
           COLUNA 2: LISTA DE CANAIS
       ========================================================= */}
       <div className="w-60 bg-black border-r border-green-900 flex flex-col z-10">
-        {/* Passamos props para o ChannelList saber que deve seguir o tema */}
         <ChannelList onSelectChannel={setSelectedChannel} />
       </div>
 
@@ -49,7 +48,7 @@ const DiscordLayout = () => {
             ) : (
                 <div className="flex flex-col items-center justify-center h-full text-green-900 space-y-4">
                     <div className="animate-spin w-12 h-12 border-4 border-green-900 border-t-green-500 rounded-full"></div>
-                    <p className="tracking-widest animate-pulse">AWAITING_CHANNEL_SELECTION...</p>
+                    <p className="tracking-widest animate-pulse uppercase">Aguardando_Seleção_Canal...</p>
                 </div>
             )}
         </div>
@@ -61,7 +60,7 @@ const DiscordLayout = () => {
       <div className="hidden lg:block w-60 bg-black border-l border-green-900 z-10">
         <div className="p-4 border-b border-green-900/30">
             <h3 className="text-xs font-bold text-green-700 uppercase tracking-widest">
-                Active_Nodes — 3
+                Nós_Ativos — 3
             </h3>
         </div>
         

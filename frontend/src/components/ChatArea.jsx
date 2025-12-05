@@ -20,7 +20,6 @@ const ChatArea = ({ channel }) => {
 
         const token = localStorage.getItem('discord_token');
 
-        // Conecta ao Socket.io passando o token
         socketRef.current = io(SOCKET_URL, {
             auth: { token }
         });
@@ -59,7 +58,6 @@ const ChatArea = ({ channel }) => {
         messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
     }, [messages]);
 
-    // Função de envio
     const handleSendMessage = (e) => {
         e.preventDefault();
         if (newMessage.trim() === '') return;
@@ -85,10 +83,10 @@ const ChatArea = ({ channel }) => {
             <div className="h-14 border-b border-green-900/50 flex items-center px-4 bg-black/60 backdrop-blur-sm z-20">
                 <FaHashtag className="text-green-600 mr-2" />
                 <span className="font-bold text-green-400 tracking-widest uppercase">
-                    {channel.name || 'UNKNOWN_CHANNEL'}
+                    {channel.name || 'CANAL_DESCONHECIDO'}
                 </span>
-                <span className="ml-4 text-[10px] text-green-800 border border-green-900 px-1">
-                    ENCRYPTED_CONNECTION
+                <span className="ml-4 text-[10px] text-green-800 border border-green-900 px-1 uppercase">
+                    CONEXÃO_CRIPTOGRAFADA
                 </span>
             </div>
 
@@ -100,10 +98,9 @@ const ChatArea = ({ channel }) => {
                     return (
                         <div key={msg.id || index} className={`flex group ${isSameUser ? 'mt-1' : 'mt-6'}`}>
                             
-                            {/* Avatar Quadrado (Estilo Retro) */}
+                            {/* Avatar Quadrado */}
                             {!isSameUser ? (
                                 <div className="w-10 h-10 rounded-none border border-green-600/50 bg-black flex-shrink-0 mr-4 overflow-hidden relative">
-                                     {/* Linha de scanline decorativa no avatar */}
                                      <div className="absolute inset-0 bg-green-500/10 pointer-events-none"></div>
                                      
                                      {msg.avatar_url ? (
@@ -127,7 +124,7 @@ const ChatArea = ({ channel }) => {
                                         <span className="text-[10px] text-green-800 uppercase tracking-widest">
                                             [{msg.created_at 
                                                 ? format(new Date(msg.created_at), "HH:mm:ss", { locale: ptBR })
-                                                : 'SYNCING...'}]
+                                                : 'SINCRONIZANDO...'}]
                                         </span>
                                     </div>
                                 )}
@@ -151,7 +148,7 @@ const ChatArea = ({ channel }) => {
                     <input
                         type="text"
                         className="bg-transparent flex-1 text-green-400 outline-none placeholder-green-900 font-mono h-full"
-                        placeholder={`Inject_Message() -> #${channel.name || 'general'}`}
+                        placeholder={`Injetar_Mensagem() -> #${channel.name || 'geral'}`}
                         value={newMessage}
                         onChange={(e) => setNewMessage(e.target.value)}
                         autoComplete="off"
