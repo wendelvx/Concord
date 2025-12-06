@@ -22,7 +22,7 @@ const ChannelList = ({ onSelectChannel }) => {
   useEffect(() => {
     const fetchChannels = async () => {
       try {
-        const response = await api.get('/channels');
+        const response = await api.get('/api/channels');
         setChannels(response.data);
 
         if (response.data.length > 0) {

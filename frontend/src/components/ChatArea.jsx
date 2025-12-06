@@ -44,7 +44,7 @@ const ChatArea = ({ channel }) => {
 
         const fetchHistory = async () => {
             try {
-                const response = await api.get(`/${channel.id}/history`);
+                const response = await api.get(`/api/chat/${channel.id}/history`);
                 setMessages(response.data);
             } catch (error) {
                 console.error("Erro ao carregar histórico:", error);
