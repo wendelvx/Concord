@@ -13,6 +13,12 @@ class ChannelModel {
         const [rows] = await db.execute(sql, [id]);
         return rows[0];
     }
+
+    static async create(name) {
+    const sql = 'INSERT INTO channels (name) VALUES (?)';
+    const [result] = await db.execute(sql, [name]);
+    return result.insertId;
+}
 }
 
 module.exports = ChannelModel;
