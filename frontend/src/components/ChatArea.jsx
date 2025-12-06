@@ -44,6 +44,8 @@ const ChatArea = ({ channel }) => {
 
         const fetchHistory = async () => {
             try {
+                // OBS: Verifique se sua rota no backend é '/chat/:id/history' ou '/:id/history'
+                // Baseado nos códigos anteriores, ajustei para a rota provável:
                 const response = await api.get(`/api/chat/${channel.id}/history`);
                 setMessages(response.data);
             } catch (error) {
@@ -68,9 +70,12 @@ const ChatArea = ({ channel }) => {
                 content: newMessage,
                 type: 'text',
                 userId: user.id, 
-                username: user.username 
+                username: user.username,
+                avatar_url: user.avatar_url // Enviamos o avatar junto para aparecer na hora sem refresh
             };
 
+            // O backend devolve para nós via 'receive_message', então não adicionamos manual aqui
+            // para evitar duplicação
             socketRef.current.emit('send_message', messageData);
             setNewMessage('');
         }
@@ -79,58 +84,78 @@ const ChatArea = ({ channel }) => {
     return (
         <div className="flex flex-col h-full bg-transparent text-green-400 font-mono">
             
-            {/* Cabeçalho do Chat */}
+            {/* Cabeçalho */}
             <div className="h-14 border-b border-green-900/50 flex items-center px-4 bg-black/60 backdrop-blur-sm z-20">
                 <FaHashtag className="text-green-600 mr-2" />
                 <span className="font-bold text-green-400 tracking-widest uppercase">
                     {channel.name || 'CANAL_DESCONHECIDO'}
                 </span>
-                <span className="ml-4 text-[10px] text-green-800 border border-green-900 px-1 uppercase">
+                <span className="ml-4 text-[10px] text-green-800 border border-green-900 px-1 uppercase hidden sm:inline-block">
                     CONEXÃO_CRIPTOGRAFADA
                 </span>
             </div>
 
-            {/* Área de Mensagens */}
-            <div className="flex-1 overflow-y-auto p-4 space-y-6 custom-scrollbar z-10">
+            {/* Lista de Mensagens */}
+            <div className="flex-1 overflow-y-auto p-4 space-y-2 custom-scrollbar z-10">
                 {messages.map((msg, index) => {
-                    const isSameUser = index > 0 && messages[index - 1].userId === msg.userId;
+                    // --- CORREÇÃO AQUI ---
+                    // Normaliza o ID: se vier do banco é 'sender_id', se vier do socket é 'userId'
+                    const msgUserId = msg.userId || msg.sender_id;
+                    const prevMsgUserId = index > 0 ? (messages[index - 1].userId || messages[index - 1].sender_id) : null;
+                    
+                    // Compara convertendo para String para evitar erro de "1" (string) vs 1 (int)
+                    const isMe = String(msgUserId) === String(user.id);
+                    const isSameUser = index > 0 && String(prevMsgUserId) === String(msgUserId);
                     
                     return (
-                        <div key={msg.id || index} className={`flex group ${isSameUser ? 'mt-1' : 'mt-6'}`}>
-                            
-                            {/* Avatar Quadrado */}
-                            {!isSameUser ? (
-                                <div className="w-10 h-10 rounded-none border border-green-600/50 bg-black flex-shrink-0 mr-4 overflow-hidden relative">
-                                     <div className="absolute inset-0 bg-green-500/10 pointer-events-none"></div>
-                                     
-                                     {msg.avatar_url ? (
-                                        <img src={`http://localhost:3001${msg.avatar_url}`} alt="avatar" className="w-full h-full object-cover grayscale contrast-125"/>
-                                     ) : (
-                                        <div className="w-full h-full flex items-center justify-center text-sm font-bold text-green-500">
-                                            {msg.username ? msg.username.charAt(0).toUpperCase() : '?'}
+                        <div 
+                            key={msg.id || index} 
+                            className={`flex w-full ${isMe ? 'justify-end' : 'justify-start'} ${isSameUser ? 'mt-1' : 'mt-6'}`}
+                        >
+                            <div className={`flex max-w-[85%] sm:max-w-[70%] ${isMe ? 'flex-row-reverse' : 'flex-row'}`}>
+                                
+                                {/* AVATAR */}
+                                <div className="flex-shrink-0">
+                                    {!isSameUser ? (
+                                        <div className={`w-10 h-10 border border-green-600/50 bg-black overflow-hidden relative ${isMe ? 'ml-4' : 'mr-4'}`}>
+                                             <div className="absolute inset-0 bg-green-500/10 pointer-events-none"></div>
+                                             {msg.avatar_url ? (
+                                                <img src={`http://localhost:3001${msg.avatar_url}`} alt="avatar" className="w-full h-full object-cover grayscale contrast-125"/>
+                                             ) : (
+                                                <div className="w-full h-full flex items-center justify-center text-sm font-bold text-green-500">
+                                                    {msg.username ? msg.username.charAt(0).toUpperCase() : '?'}
+                                                </div>
+                                             )}
                                         </div>
-                                     )}
+                                    ) : (
+                                        <div className={`w-10 h-10 ${isMe ? 'ml-4' : 'mr-4'}`}></div>
+                                    )}
                                 </div>
-                            ) : (
-                                <div className="w-10 mr-4 border-l border-green-900/30 ml-5 h-full opacity-50"></div> 
-                            )}
 
-                            <div className="flex-1">
-                                {!isSameUser && (
-                                    <div className="flex items-baseline mb-1">
-                                        <span className="font-bold text-green-400 mr-2 cursor-pointer hover:underline decoration-dashed hover:text-green-300">
-                                            {msg.username}
-                                        </span>
-                                        <span className="text-[10px] text-green-800 uppercase tracking-widest">
-                                            [{msg.created_at 
-                                                ? format(new Date(msg.created_at), "HH:mm:ss", { locale: ptBR })
-                                                : 'SINCRONIZANDO...'}]
-                                        </span>
+                                {/* CONTEÚDO */}
+                                <div className={`flex flex-col ${isMe ? 'items-end' : 'items-start'} min-w-0`}>
+                                    {!isSameUser && (
+                                        <div className={`flex items-baseline mb-1 ${isMe ? 'flex-row-reverse' : 'flex-row'}`}>
+                                            <span className={`font-bold text-sm cursor-pointer hover:underline decoration-dashed ${isMe ? 'text-green-300 ml-2' : 'text-green-500 mr-2'}`}>
+                                                {msg.username}
+                                            </span>
+                                            <span className="text-[10px] text-green-800 uppercase tracking-widest whitespace-nowrap">
+                                                {msg.created_at 
+                                                    ? format(new Date(msg.created_at), "HH:mm", { locale: ptBR })
+                                                    : '...'}
+                                            </span>
+                                        </div>
+                                    )}
+                                    
+                                    <div className={`
+                                        py-2 px-3 text-sm break-words border relative
+                                        ${isMe 
+                                            ? 'bg-green-900/20 border-green-700 text-green-300 rounded-bl-lg rounded-tl-lg rounded-br-none text-right' 
+                                            : 'bg-black border-green-900 text-green-400 rounded-br-lg rounded-tr-lg rounded-bl-none text-left'}
+                                    `}>
+                                        {msg.content}
                                     </div>
-                                )}
-                                <p className={`text-green-200/90 leading-relaxed break-all text-sm ${!isSameUser ? '' : 'opacity-90'}`}>
-                                    {msg.content}
-                                </p>
+                                </div>
                             </div>
                         </div>
                     );
@@ -138,7 +163,7 @@ const ChatArea = ({ channel }) => {
                 <div ref={messagesEndRef} />
             </div>
 
-            {/* Input de Mensagem */}
+            {/* Input */}
             <div className="p-4 bg-black border-t border-green-900 z-20">
                 <form 
                     onSubmit={handleSendMessage}
