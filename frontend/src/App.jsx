@@ -2,12 +2,10 @@ import React, { useContext } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, AuthContext } from './context/AuthContext';
 
-// Importe suas páginas
 import Login from './pages/Login';
 import Register from './pages/Register';
 import DiscordLayout from './pages/DiscordLayout';
 
-// Componente para proteger rotas privadas (só acessa se estiver logado)
 const PrivateRoute = ({ children }) => {
   const { authenticated, loading } = useContext(AuthContext);
 
